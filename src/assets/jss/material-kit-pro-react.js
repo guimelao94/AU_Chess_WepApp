@@ -80,8 +80,9 @@ const dangerColor = [
   "#f55a4e",
   "#f2dede",
   "#ebcccc",
-  "ef9a9a",
-  "#ef5350"
+  "#ef9a9a",
+  "#ef5350",
+  "#b7210a"
 ];
 const successColor = [
   "#4caf50",
