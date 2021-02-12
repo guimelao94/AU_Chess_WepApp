@@ -32,10 +32,10 @@ const customSelectStyle = {
     "& > div": {
       "&:before": {
         borderBottomWidth: "1px !important",
-        borderBottomColor: grayColor[11] + " !important"
+        borderBottomColor: "#9c27b0" + " !important"
       },
       "&:after": {
-        borderBottomColor: primaryColor[0] + "!important"
+        borderBottomColor: "#9c27b0" + "!important"
       }
     }
   },
@@ -79,7 +79,7 @@ const customSelectStyle = {
     color: grayColor[8],
     paddingRight: "30px",
     "&:hover": {
-      backgroundColor: primaryColor[0],
+      backgroundColor: "#9c27b0",
       color: whiteColor,
       ...primaryBoxShadow
     }
@@ -108,7 +108,7 @@ const customSelectStyle = {
       color: grayColor[1],
       position: "absolute",
       content: "''",
-      borderBottom: "2px solid currentColor",
+      borderBottom: "2px solid #9c27b0",
       transition: "opacity 90ms cubic-bezier(0,0,.2,.1)"
     }
   },

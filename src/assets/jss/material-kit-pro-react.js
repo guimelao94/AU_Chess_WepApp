@@ -64,7 +64,7 @@ const primaryColor = [
 ];
 const secondaryColor = ["#fafafa"];
 const warningColor = [
-  "#ff9800",
+  "#be9549",
   "#ffa726",
   "#fb8c00",
   "#ffa21a",
@@ -95,7 +95,7 @@ const successColor = [
   "#66bb6a"
 ];
 const infoColor = [
-  "#00acc1",
+  "#002A46",
   "#26c6da",
   "#00acc1",
   "#00d3ee",
@@ -106,7 +106,7 @@ const infoColor = [
 ];
 const roseColor = ["#e91e63", "#ec407a", "#d81b60", "#f8bbd0", "#f06292"];
 const grayColor = [
-  "#999",
+  "#00406F",
   "#3C4858",
   "#eee",
   "#343434",

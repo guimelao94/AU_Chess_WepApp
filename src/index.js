@@ -21,8 +21,9 @@ import { Router, Route, Switch } from "react-router";
 
 import "assets/scss/material-kit-pro-react.scss?v=1.9.0";
 
-import HomePage from "areas/home/home";
+import {HomePage} from "areas/home/home";
 import ErrorPage from "views/ErrorPage/ErrorPage.js";
+import {SignUpPage} from "areas/signup/SignupPage";
 
 var hist = createBrowserHistory();
 
@@ -30,6 +31,7 @@ ReactDOM.render(
   <Router history={hist}>
     <Switch>
       <Route path="/error-page" component={ErrorPage} />
+      <Route path="/signup" component={SignUpPage} />
       <Route path="/" component={HomePage} />
     </Switch>
   </Router>,

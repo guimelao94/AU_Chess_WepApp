@@ -73,6 +73,7 @@ export default function CustomInput(props) {
         </InputLabel>
       ) : null}
       <Input
+        onChange={props.onChange}
         classes={{
           input: inputClasses,
           root: marginTop,

@@ -18,11 +18,8 @@ import {
 
 const headerStyle = theme => ({
   appBar: {
-    display: "flex",
     border: "0",
-    borderRadius: "3px",
     padding: "0.625rem 0",
-    marginBottom: "20px",
     color: grayColor[15],
     width: "100%",
     backgroundColor: whiteColor,
@@ -35,7 +32,6 @@ const headerStyle = theme => ({
     transition: "all 150ms ease 0s",
     alignItems: "center",
     flexFlow: "row nowrap",
-    justifyContent: "flex-start",
     position: "relative"
   },
   absolute: {
@@ -49,9 +45,7 @@ const headerStyle = theme => ({
     ...container,
     minHeight: "50px",
     alignItems: "center",
-    justifyContent: "space-between",
-    display: "flex",
-    flexWrap: "nowrap"
+    justifyContent: "space-between"
   },
   title: {
     letterSpacing: "unset",
@@ -59,11 +53,14 @@ const headerStyle = theme => ({
       ...defaultFont,
       minWidth: "unset",
       lineHeight: "30px",
-      fontSize: "18px",
+      fontSize: "35px",
+      fontFamily:"'Roboto Slab'",
+      fontWeight:"bolder",
+      textAlign:"center",
       borderRadius: "3px",
       textTransform: "none",
       whiteSpace: "nowrap",
-      color: "inherit",
+      color: "#be9549",
       "&:hover,&:focus": {
         color: "inherit",
         background: "transparent"
@@ -86,12 +83,12 @@ const headerStyle = theme => ({
   },
   info: {
     backgroundColor: infoColor[0],
-    color: whiteColor,
+    color: "#be9549",
     boxShadow:
       "0 4px 20px 0px rgba(" +
       hexToRgb(blackColor) +
       ", 0.14), 0 7px 12px -5px rgba(" +
-      hexToRgb(infoColor[0]) +
+      hexToRgb("#be9549") +
       ", 0.46)"
   },
   success: {
@@ -190,10 +187,11 @@ const headerStyle = theme => ({
   },
   collapse: {
     [theme.breakpoints.up("md")]: {
-      display: "flex !important",
+      display: "none !important",
       MsFlexPreferredSize: "auto",
       flexBasis: "auto"
     },
+    display:"none",
     WebkitBoxFlex: "1",
     MsFlexPositive: "1",
     flexGrow: "1",
@@ -202,6 +200,7 @@ const headerStyle = theme => ({
     alignItems: "center"
   },
   closeButtonDrawer: {
+    display:"none",
     position: "absolute",
     right: "8px",
     top: "9px",

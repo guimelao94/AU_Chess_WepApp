@@ -17,6 +17,7 @@ import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
 import HeaderLinks from "components/Header/HeaderLinks.js";
 import Parallax from "components/Parallax/Parallax.js";
+import landing from "assets/img/landing.png";
 
 import landingPageStyle from "assets/jss/material-kit-pro-react/views/landingPageStyle.js";
 import { Search } from "@material-ui/icons";
@@ -24,87 +25,90 @@ import { Search } from "@material-ui/icons";
 
 const useStyles = makeStyles(landingPageStyle);
 
-export default function HomePage({ ...rest }) {
+export const HomePage = () =>{
+  return (
+    <HomePageBox />
+  );
+}
+
+export const  HomePageBox = ({ ...rest }) => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
   });
   const classes = useStyles();
   return (
-    <div>
       
-      <Parallax image={require("assets/img/landing.png")} 
-        style={{
-            height:"105vh"
-        }}
-      >
       <div 
-        style={{
-            position:"absolute",
-            top:"0",
-            textAlign:"center",
-            color:"white",
-            textShadow:"0px 1px 4px #00000078"
-        }}
+        
       >
-          <h1>AU CHESS CLUB</h1>
-      </div>
-        <div className={classes.container}>
+          <Header
+            brand="AU Chess Club"
+            color="info"
+          />
+
+        <div className={classes.container}
+          style={{ 
+            backgroundImage:"url("+landing+")",
+            backgroundSize:"cover",
+            minHeight:"92vh"
+          }}
+        >
           <GridContainer>
-            <GridItem xs={12} sm={6} md={6} style={{textAlign:"center"}}>
+
+            <GridItem xs={12} style={{textAlign:"center",marginTop:"10.5em"}}>
               
               <Button
-                style={{width:"100%"}}
-                color="danger"
+                style={{width:"100%",marginBottom:"2em"}}
+                color="gray"
                 size="lg"
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ref=creativetim"
-                target="_blank"
+                href="/signup"
               >
                 <i className="fas fa-clipboard" />
                 Club Sign Up
               </Button>
-            <hr/>
+            <br/>
               <Button
-                style={{width:"100%"}}
+                style={{width:"100%",marginBottom:"2em"}}
                 color="warning"
                 size="lg"
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ref=creativetim"
+                href="https://churchteams.com/m/Register.asp?a=MThGZzJLQ0FnSnc9"
                 target="_blank"
               >
                 <i className="fas fa-users" />
                 Grow Group Sign Up
               </Button>
-              <hr/>
+
               <Button
-                style={{width:"100%"}}
-                color="primary"
+                style={{width:"100%",marginBottom:"2em"}}
+                color="gray"
                 size="lg"
-                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ref=creativetim"
-                target="_blank"
+                href="https://discord.gg/eS2uJNZs3t"
               >
                 <i className="fab fa-discord" />
                 Join Discord Server
               </Button>
-              <hr/>
+
               <Button
-                style={{width:"100%"}}
-                color="rose"
+                style={{width:"100%",marginBottom:"2em"}}
+                color="warning"
                 size="lg"
                 href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ref=creativetim"
-                target="_blank"
               >
                 <i className="fas fa-hand-paper" />
                 Attendance
               </Button>
             </GridItem>
+            <GridItem xs={12} style={{textAlign:"center",marginTop:"8em"}}>
+            <img
+              style={{ height: "100px", display: "block",margin:"auto" }}
+              className={classes.imgCardTop}
+              src={require("assets/img/AU_Flogo_Blue.png")}
+              alt="Card-img-cap"
+            />
+            </GridItem>
           </GridContainer>
         </div>
-      </Parallax>
-      <div className={classNames(classes.main, classes.mainRaised)}>
-        <div className={classes.container}>
-          
-        </div>
-      </div>
     </div>
   );
 }
