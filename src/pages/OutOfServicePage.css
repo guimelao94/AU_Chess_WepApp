@@ -1,0 +1,38 @@
+.out-of-service {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.out-of-service-container {
+  text-align: center;
+  max-width: 600px;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.out-of-service-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #0d4a47;
+  margin-bottom: 24px;
+}
+
+.out-of-service-message {
+  font-size: 24px;
+  color: #333333;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.out-of-service-submessage {
+  font-size: 18px;
+  color: #5a8a86;
+  line-height: 1.6;
+}
+
