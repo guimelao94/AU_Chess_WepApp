@@ -18,7 +18,7 @@ function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
-  
+
   const [formData, setFormData] = useState({
     category: 'Contemporary',
     tempo: 'Fast',
@@ -29,14 +29,14 @@ function AdminPage() {
   const [songs, setSongs] = useState([]);
   const [editingSong, setEditingSong] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [showHidden, setShowHidden] = useState(false);
 
   useEffect(() => {
-    // Check if already authenticated (stored in localStorage)
     const authStatus = localStorage.getItem('worshipJamAdmin');
     if (authStatus === 'authenticated') {
       setAuthenticated(true);
       loadSongs();
-      // Initialize all songs if they don't exist
       initializeSongs().then((result) => {
         if (result.success && result.count > 0) {
           setSuccessMessage(`Initialized ${result.count} songs!`);
@@ -57,7 +57,6 @@ function AdminPage() {
       setAuthenticated(true);
       setError('');
       localStorage.setItem('worshipJamAdmin', 'authenticated');
-      // Initialize all songs if they don't exist
       const result = await initializeSongs();
       if (result.success && result.count > 0) {
         setSuccessMessage(`Initialized ${result.count} songs!`);
@@ -82,7 +81,7 @@ function AdminPage() {
     });
     setEditingSong(null);
     setSongs([]);
-    window.location.reload(); // Refresh to clear authenticated state across all pages
+    window.location.reload();
   };
 
   const loadSongs = async () => {
@@ -92,10 +91,10 @@ function AdminPage() {
       querySnapshot.forEach((doc) => {
         songsList.push({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
+          visible: doc.data().visible ?? false
         });
       });
-      // Sort by category then title in memory
       songsList.sort((a, b) => {
         if (a.category !== b.category) {
           return a.category.localeCompare(b.category);
@@ -111,7 +110,7 @@ function AdminPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -129,29 +128,28 @@ function AdminPage() {
 
     try {
       if (editingSong) {
-        // Update existing song
         await updateDoc(doc(db, 'songs', editingSong.id), {
           category: formData.category,
           tempo: formData.tempo,
           title: formData.title.trim(),
           lyrics: formData.lyrics.trim(),
+          visible: editingSong.visible ?? false,
           updatedAt: new Date()
         });
         setSuccessMessage('Song updated successfully!');
       } else {
-        // Add new song
         await addDoc(collection(db, 'songs'), {
           category: formData.category,
           tempo: formData.tempo,
           title: formData.title.trim(),
           lyrics: formData.lyrics.trim(),
+          visible: false,
           createdAt: new Date(),
           updatedAt: new Date()
         });
         setSuccessMessage('Song added successfully!');
       }
 
-      // Reset form
       setFormData({
         category: 'Contemporary',
         tempo: 'Fast',
@@ -160,7 +158,7 @@ function AdminPage() {
       });
       setEditingSong(null);
       loadSongs();
-
+      setShowFormModal(false);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error saving song:', error);
@@ -169,14 +167,7 @@ function AdminPage() {
   };
 
   const handleEdit = (song) => {
-    setEditingSong(song);
-    setFormData({
-      category: song.category,
-      tempo: song.tempo,
-      title: song.title,
-      lyrics: song.lyrics
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    openEditModal(song);
   };
 
   const handleDelete = async (songId) => {
@@ -203,6 +194,44 @@ function AdminPage() {
     });
     setError('');
     setSuccessMessage('');
+    setShowFormModal(false);
+  };
+
+  const openAddModal = () => {
+    setEditingSong(null);
+    setFormData({
+      category: 'Contemporary',
+      tempo: 'Fast',
+      title: '',
+      lyrics: ''
+    });
+    setShowFormModal(true);
+  };
+
+  const openEditModal = (song) => {
+    setEditingSong(song);
+    setFormData({
+      category: song.category,
+      tempo: song.tempo,
+      title: song.title,
+      lyrics: song.lyrics
+    });
+    setShowFormModal(true);
+  };
+
+  const toggleVisibility = async (song) => {
+    try {
+      await updateDoc(doc(db, 'songs', song.id), {
+        visible: !song.visible,
+        updatedAt: new Date()
+      });
+      setSongs((prev) =>
+        prev.map((s) => (s.id === song.id ? { ...s, visible: !s.visible } : s))
+      );
+    } catch (error) {
+      console.error('Error toggling visibility:', error);
+      setError('Error updating visibility');
+    }
   };
 
   if (!authenticated) {
@@ -257,11 +286,91 @@ function AdminPage() {
         </div>
       </header>
 
-      <main className="container">
-        <div className="admin-page">
-          <div className="auth-form">
-            <h2>{editingSong ? 'Edit Song' : 'Add New Song'}</h2>
-            <form onSubmit={handleSubmit}>
+      <main className="container admin-container">
+        <div className="admin-page admin-grid single-column">
+          <div className="songs-list-admin admin-list-panel">
+            <div className="admin-list-header">
+              <div>
+                <h2>Existing Songs</h2>
+                <span className="admin-muted">{songs.length} total</span>
+              </div>
+              <label className="admin-checkbox">
+                <input
+                  type="checkbox"
+                  checked={showHidden}
+                  onChange={(e) => setShowHidden(e.target.checked)}
+                />
+                Show hidden
+              </label>
+            </div>
+            {songs.length === 0 ? (
+              <div className="empty-state">
+                <p>No songs added yet. Start by adding a song.</p>
+              </div>
+            ) : (
+              <div className="admin-table-wrapper">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Category</th>
+                      <th>Tempo</th>
+                      <th>Visible</th>
+                      <th style={{ width: '180px' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {songs
+                      .filter((song) => showHidden || song.visible)
+                      .map((song) => (
+                      <tr key={song.id}>
+                        <td>{song.title}</td>
+                        <td>{song.category}</td>
+                        <td>{song.tempo}</td>
+                        <td>
+                          <button
+                            className="button button-secondary button-small"
+                            onClick={() => toggleVisibility(song)}
+                          >
+                            {song.visible ? 'Hide' : 'Show'}
+                          </button>
+                        </td>
+                        <td>
+                          <div className="button-group">
+                            <button
+                              onClick={() => openEditModal(song)}
+                              className="button button-secondary button-small"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(song.id)}
+                              className="button button-danger button-small"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+        <button className="admin-fab" onClick={openAddModal} aria-label="Add Song">
+          +
+        </button>
+      </main>
+      {showFormModal && (
+        <div className="admin-modal-backdrop" onClick={handleCancel}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-card-header">
+              <h2>{editingSong ? 'Edit Song' : 'Add New Song'}</h2>
+              <span className="admin-muted">{editingSong ? 'Update existing entry' : 'Create a new entry'}</span>
+            </div>
+            <form onSubmit={handleSubmit} className="admin-form-grid modal-form-grid">
               <div className="form-group">
                 <label htmlFor="category">Category</label>
                 <select
@@ -275,6 +384,7 @@ function AdminPage() {
                   <option value="Gospel">Gospel</option>
                   <option value="Hymns">Hymns</option>
                   <option value="Traditional">Traditional</option>
+                  <option value="Christmas">Christmas</option>
                 </select>
               </div>
 
@@ -292,7 +402,7 @@ function AdminPage() {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div className="form-group form-group-full">
                 <label htmlFor="title">Song Title</label>
                 <input
                   type="text"
@@ -305,7 +415,7 @@ function AdminPage() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group form-group-full">
                 <label htmlFor="lyrics">Lyrics</label>
                 <textarea
                   id="lyrics"
@@ -314,6 +424,7 @@ function AdminPage() {
                   onChange={handleInputChange}
                   placeholder="Enter song lyrics (line breaks will be preserved)"
                   required
+                  rows={10}
                 />
               </div>
 
@@ -324,50 +435,14 @@ function AdminPage() {
                 <button type="submit" className="button">
                   {editingSong ? 'Update Song' : 'Add Song'}
                 </button>
-                {editingSong && (
-                  <button type="button" onClick={handleCancel} className="button button-secondary">
-                    Cancel
-                  </button>
-                )}
+                <button type="button" onClick={handleCancel} className="button button-secondary">
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
-
-          <div className="songs-list-admin">
-            <h2 style={{ color: '#0d4a47', marginBottom: '24px' }}>
-              Existing Songs ({songs.length})
-            </h2>
-            {songs.length === 0 ? (
-              <div className="empty-state">
-                <p>No songs added yet. Start by adding a song above.</p>
-              </div>
-            ) : (
-              songs.map((song) => (
-                <div key={song.id} className="song-item-admin">
-                  <h3>{song.title}</h3>
-                  <p>
-                    <strong>Category:</strong> {song.category} • <strong>Tempo:</strong> {song.tempo}
-                  </p>
-                  <div className="button-group">
-                    <button
-                      onClick={() => handleEdit(song)}
-                      className="button button-secondary button-small"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(song.id)}
-                      className="button button-danger button-small"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
         </div>
-      </main>
+      )}
       <Footer />
     </div>
   );

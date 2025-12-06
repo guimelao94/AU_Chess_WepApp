@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { collection, query, where, getDocs, limit, updateDoc, doc, addDoc } from 'firebase/firestore';
 import { db } from '../Fire';
 import Footer from '../components/Footer';
+import { addSongToQueue } from '../utils/queue';
 
 function SongDetailPage() {
   const { category, songName } = useParams();
@@ -15,6 +16,7 @@ function SongDetailPage() {
   const [editedLyrics, setEditedLyrics] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [queueMessage, setQueueMessage] = useState('');
 
   useEffect(() => {
     // Check authentication status
@@ -115,6 +117,23 @@ function SongDetailPage() {
     setSuccessMessage('');
   };
 
+  const handleQueueAdd = async () => {
+    try {
+      setQueueMessage('');
+      await addSongToQueue({
+        title: song?.title,
+        category: song?.category,
+        tempo: song?.tempo
+      });
+      setQueueMessage('Added to queue');
+      setTimeout(() => setQueueMessage(''), 2000);
+    } catch (err) {
+      console.error('Error adding to queue:', err);
+      setQueueMessage('Unable to add to queue');
+      setTimeout(() => setQueueMessage(''), 2000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="container">
@@ -140,6 +159,14 @@ function SongDetailPage() {
           <p className="song-category-centered">
             {song?.category} • {song?.tempo}
           </p>
+
+          <div className="queue-detail-actions">
+            <button className="button button-secondary button-small" onClick={handleQueueAdd}>
+              Add to Queue
+            </button>
+            {queueMessage && <span className="queue-bar-subtle">{queueMessage}</span>}
+          </div>
+
 
           {isAuthenticated && (
             <div style={{ marginBottom: '4px', marginTop: '2px' }}>
