@@ -17,11 +17,13 @@ function SongDetailPage() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [queueMessage, setQueueMessage] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Check authentication status
     const authStatus = localStorage.getItem('worshipJamAdmin');
     setIsAuthenticated(authStatus === 'authenticated');
+    setIsAdmin(authStatus === 'authenticated');
 
     const fetchSong = async () => {
       try {
@@ -160,12 +162,14 @@ function SongDetailPage() {
             {song?.category} • {song?.tempo}
           </p>
 
-          <div className="queue-detail-actions">
-            <button className="button button-secondary button-small" onClick={handleQueueAdd}>
-              Add to Queue
-            </button>
-            {queueMessage && <span className="queue-bar-subtle">{queueMessage}</span>}
-          </div>
+          {isAdmin && (
+            <div className="queue-detail-actions">
+              <button className="button button-secondary button-small" onClick={handleQueueAdd}>
+                Add to Queue
+              </button>
+              {queueMessage && <span className="queue-bar-subtle">{queueMessage}</span>}
+            </div>
+          )}
 
 
           {isAuthenticated && (

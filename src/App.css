@@ -566,6 +566,50 @@ body {
   background: rgba(0, 0, 0, 0.02);
 }
 
+.admin-table td[data-label] {
+  position: relative;
+}
+
+@media (max-width: 640px) {
+  .admin-table {
+    display: block;
+  }
+
+  .admin-table thead {
+    display: none;
+  }
+
+  .admin-table tbody {
+    display: block;
+  }
+
+  .admin-table tr {
+    display: block;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    padding: 6px 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .admin-table td {
+    display: block;
+    width: 100%;
+    padding: 6px 4px;
+  }
+
+  .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #2b1b1b;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .admin-table td:last-child .button-group {
+    justify-content: flex-start;
+  }
+}
 .admin-fab {
   position: fixed;
   right: 16px;

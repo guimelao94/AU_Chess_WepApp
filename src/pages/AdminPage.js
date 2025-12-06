@@ -324,10 +324,10 @@ function AdminPage() {
                       .filter((song) => showHidden || song.visible)
                       .map((song) => (
                       <tr key={song.id}>
-                        <td>{song.title}</td>
-                        <td>{song.category}</td>
-                        <td>{song.tempo}</td>
-                        <td>
+                        <td data-label="Title">{song.title}</td>
+                        <td data-label="Category">{song.category}</td>
+                        <td data-label="Tempo">{song.tempo}</td>
+                        <td data-label="Visible">
                           <button
                             className="button button-secondary button-small"
                             onClick={() => toggleVisibility(song)}
@@ -335,7 +335,7 @@ function AdminPage() {
                             {song.visible ? 'Hide' : 'Show'}
                           </button>
                         </td>
-                        <td>
+                        <td data-label="Actions">
                           <div className="button-group">
                             <button
                               onClick={() => openEditModal(song)}
