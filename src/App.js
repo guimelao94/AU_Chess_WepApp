@@ -8,7 +8,7 @@ import OutOfServicePage from './pages/OutOfServicePage';
 
 // Set this to true to enable the out of service page
 // Set to false to restore normal operation
-const OUT_OF_SERVICE = false;
+const OUT_OF_SERVICE = true;
 
 function App() {
   // If out of service, show only the out of service page
@@ -40,4 +40,5 @@ function App() {
 }
 
 export default App;
+
 
